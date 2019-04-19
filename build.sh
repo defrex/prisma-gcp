@@ -3,9 +3,10 @@
 set -e
 
 VERSION="${1:?Provide the Prisma version this script should use}"
-APP="${2:?Provide the Heroku app name to deploy/release to}"
+PROJECT_ID="${2:?Provide the GCP Project ID}"
+LOCATION="gcr.io/$PROJECT_ID/prisma:$VERSION"
 
-docker build --build-arg tag=${VERSION} -t registry.heroku.com/${APP}/web .
-docker push registry.heroku.com/${APP}/web
+docker build --build-arg tag=${VERSION} --tag=$LOCATION .
+docker push $LOCATION
 
-echo "Image pushed successfully. Release with heroku container:release web -a ${APP}"
+echo "Image pushed successfully to $LOCATION"
